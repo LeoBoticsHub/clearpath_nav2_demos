@@ -85,10 +85,10 @@ def launch_setup(context, *args, **kwargs):
 
     nav2 = GroupAction([
         PushRosNamespace(namespace),
-        SetRemap('/' + namespace + '/global_costmap/sensors/lidar3d_0/scan',
-                 '/' + namespace + '/sensors/lidar3d_0/scan'),
-        SetRemap('/' + namespace + '/local_costmap/sensors/lidar3d_0/scan',
-                 '/' + namespace + '/sensors/lidar3d_0/scan'),
+        SetRemap('/global_costmap/sensors/lidar3d_0/scan',
+                 '/sensors/lidar3d_0/scan'),
+        SetRemap('/local_costmap/sensors/lidar3d_0/scan',
+                 '/sensors/lidar3d_0/scan'),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(launch_nav2),
