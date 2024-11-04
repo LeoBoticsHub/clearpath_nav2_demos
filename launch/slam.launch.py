@@ -87,7 +87,7 @@ def launch_setup(context, *args, **kwargs):
 
     slam = Node(
         package='slam_toolbox',
-        executable='async_slam_toolbox_node',
+        executable='sync_slam_toolbox_node',
         name='slam_toolbox',
         namespace=namespace,
         output='screen',
