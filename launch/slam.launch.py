@@ -85,6 +85,32 @@ def launch_setup(context, *args, **kwargs):
         convert_types=True
     )
 
+    # PointCloud -> LaserScan
+    pointcloud_to_laserscan = Node(
+        package='pointcloud_to_laserscan',
+        executable='pointcloud_to_laserscan_node',
+        name='pointcloud_to_laserscan',
+        output='screen',
+        parameters=[{
+            'target_frame': 'lidar3d_0_laser',
+            'transform_tolerance': 0.01,
+            'min_height': -0.65,
+            'max_height': 0.3,
+            'angle_min': -3.14,
+            'angle_max':  3.14,
+            'angle_increment': 0.0087,
+            'scan_time': 0.3333,
+            'range_min': 0.45,
+            'range_max': 60.0,
+            'use_inf': True,
+            'inf_epsilon': 1.0,
+        }],
+        remappings=[
+            ('cloud_in', '/sensors/lidar3d_0/velodyne_points'),
+            ('scan', '/scan_from_points'),
+        ],
+    )
+
     slam = Node(
         package='slam_toolbox',
         executable='sync_slam_toolbox_node',
@@ -98,13 +124,16 @@ def launch_setup(context, *args, **kwargs):
         remappings=[
           ('/tf', 'tf'),
           ('/tf_static', 'tf_static'),
-          ('/scan', 'sensors/lidar3d_0/scan'),
+          ('/scan', 'scan_from_points'),
           ('/map', 'map'),
           ('/map_metadata', 'map_metadata'),
         ]
     )
 
-    return [slam]
+    return [
+        pointcloud_to_laserscan,
+        slam
+    ]
 
 
 def generate_launch_description():
