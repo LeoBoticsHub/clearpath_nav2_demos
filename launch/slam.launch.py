@@ -52,7 +52,10 @@ ARGUMENTS = [
                           description='Use sim time'),
     DeclareLaunchArgument('setup_path',
                           default_value='/etc/clearpath/',
-                          description='Clearpath setup path')
+                          description='Clearpath setup path'),
+    DeclareLaunchArgument('real_robot', default_value='false',
+                        choices=['true', 'false'],
+                        description='true: real robot, false: simulation')
 ]
 
 
@@ -62,7 +65,12 @@ def launch_setup(context, *args, **kwargs):
 
     # Launch Configurations
     use_sim_time = LaunchConfiguration('use_sim_time')
-    setup_path = LaunchConfiguration('setup_path')
+    setup_path   = LaunchConfiguration('setup_path')
+    real_robot   = LaunchConfiguration('real_robot')
+    
+    # Determine point cloud topic name based on real robot or simulation
+    real_robot_bool = real_robot.perform(context).lower() == 'true'
+    cloud_topic = '/sensors/lidar3d_0/velodyne_points' if real_robot_bool else '/sensors/lidar3d_0/points'
 
     # Read robot YAML
     config = read_yaml(setup_path.perform(context) + 'robot.yaml')
@@ -106,7 +114,7 @@ def launch_setup(context, *args, **kwargs):
             'inf_epsilon': 1.0,
         }],
         remappings=[
-            ('cloud_in', '/sensors/lidar3d_0/velodyne_points'),
+            ('cloud_in', cloud_topic),
             ('scan', '/scan_from_points'),
         ],
     )
