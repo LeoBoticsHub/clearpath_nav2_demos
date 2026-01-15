@@ -70,7 +70,7 @@ def launch_setup(context, *args, **kwargs):
     
     # Determine point cloud topic name based on real robot or simulation
     real_robot_bool = real_robot.perform(context).lower() == 'true'
-    cloud_topic = '/sensors/lidar3d_0/velodyne_points' if real_robot_bool else '/sensors/lidar3d_0/points'
+    cloud_topic = '/velodyne_points' if real_robot_bool else '/sensors/lidar3d_0/points'
 
     # Read robot YAML
     config = read_yaml(setup_path.perform(context) + 'robot.yaml')
